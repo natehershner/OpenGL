@@ -1,6 +1,7 @@
 #include "config.h"
 #include "triangle_mesh.h"
 #include "material.h"
+#include "linear_algebra.h"
 
 
 unsigned int make_module(const std::string& filepath, unsigned int module_type); 
@@ -40,12 +41,14 @@ int main() {
 			"../src/shaders/fragment.txt"
 			);
 
-
 	glUseProgram(shader);
 
 	//Set texture positions
 	glUniform1i(glGetUniformLocation(shader, "material"), 0);
 	glUniform1i(glGetUniformLocation(shader, "mask"), 1);
+
+	vec3 quad_position = {0.1f, -0.2f, 0.0f};
+	unsigned int model_location = glGetUniformLocation(shader, "model");
 
 	//Enable alpha blending
 	glEnable(GL_BLEND);
@@ -55,6 +58,8 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 		//Watch for events
 		glfwPollEvents();
+		mat4 model = create_z_rotation(10 * glfwGetTime());
+		glUniformMatrix4fv(model_location, 1, GL_FALSE, model.entries);
 
 		//Reset screen color
 		glClear(GL_COLOR_BUFFER_BIT);

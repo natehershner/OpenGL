@@ -16,6 +16,7 @@ add_executable(window
 	src/triangle_mesh.h
 	src/triangle_mesh.cpp
 	src/material.cpp
+	src/linear_algebra.cpp
 	)
 
 target_include_directories(window PRIVATE dependencies)
