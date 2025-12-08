@@ -48,7 +48,13 @@ int main() {
 	glUniform1i(glGetUniformLocation(shader, "mask"), 1);
 
 	vec3 quad_position = {0.1f, -0.2f, 0.0f};
+	vec3 camera_pos = {-0.4f, 0.0f, 0.2f};
+	vec3 camera_target = {0.0f, 0.0f, 0.0f};
 	unsigned int model_location = glGetUniformLocation(shader, "model");
+	unsigned int view_location = glGetUniformLocation(shader, "view");
+	mat4 view = create_look_at(camera_pos, camera_target);
+	glUniformMatrix4fv(view_location, 1, GL_FALSE, view.entries);
+	
 
 	//Enable alpha blending
 	glEnable(GL_BLEND);
@@ -58,7 +64,7 @@ int main() {
 	while (!glfwWindowShouldClose(window)) {
 		//Watch for events
 		glfwPollEvents();
-		mat4 model = create_z_rotation(10 * glfwGetTime());
+		mat4 model = create_model_transform(quad_position, 10 * glfwGetTime());
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, model.entries);
 
 		//Reset screen color
