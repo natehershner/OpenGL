@@ -1,7 +1,6 @@
 #include "config.h"
 #include "triangle_mesh.h"
 #include "material.h"
-#include "linear_algebra.h"
 
 
 unsigned int make_module(const std::string& filepath, unsigned int module_type); 
@@ -15,6 +14,13 @@ int main() {
 		std::cout << "GLFW couldn't initialize!" << std::endl;
 		return -1;
 	}
+
+	//Set OpenGL 3.3 rendering
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+
 
 	//Width, Height, Name, Display, Shared resources
 	window = glfwCreateWindow(640, 480, "Hello Window", NULL, NULL);
@@ -30,11 +36,15 @@ int main() {
 
 	//Set color
 	glClearColor(0.75f, 0.5f, 0.75f, 1.0f);
+
+	//Get screen size
 	int w, h;
+	glfwGetFramebufferSize(window, &w, &h);
+	glViewport(0, 0, w, h);
 
 	TriangleMesh* triangle = new TriangleMesh();
 	Material* material = new Material("../img/space.jpg");
-	Material* mask = new Material("../img/vignette.jpg");
+	Material* mask = new Material("../img/mask.jpg");
 
 	unsigned int shader = make_shader(
 			"../src/shaders/vertex.txt",
@@ -47,14 +57,20 @@ int main() {
 	glUniform1i(glGetUniformLocation(shader, "material"), 0);
 	glUniform1i(glGetUniformLocation(shader, "mask"), 1);
 
-	vec3 quad_position = {0.1f, -0.2f, 0.0f};
-	vec3 camera_pos = {-0.4f, 0.0f, 0.2f};
-	vec3 camera_target = {0.0f, 0.0f, 0.0f};
 	unsigned int model_location = glGetUniformLocation(shader, "model");
 	unsigned int view_location = glGetUniformLocation(shader, "view");
-	mat4 view = create_look_at(camera_pos, camera_target);
-	glUniformMatrix4fv(view_location, 1, GL_FALSE, view.entries);
-	
+	unsigned int proj_location = glGetUniformLocation(shader, "projection");
+
+	glm::vec3 quad_position = {0.1, -0.2f, 0.0f};
+	glm::vec3 camera_pos = {-5.0f, 0.0f, 3.0f};
+	glm::vec3 camera_target = {0.0f, 0.0f, 0.0f};
+	glm::vec3 up = {0.0f, 0.0f, 1.0f};
+
+	glm::mat4 view = glm::lookAt(camera_pos, camera_target, up);
+	glUniformMatrix4fv(view_location, 1, GL_FALSE, glm::value_ptr(view));
+
+	glm::mat4 projection = glm::perspective(45.0f, 640.0f / 480.0f, 0.1f, 10.0f);
+	glUniformMatrix4fv(proj_location, 1, GL_FALSE, glm::value_ptr(projection));
 
 	//Enable alpha blending
 	glEnable(GL_BLEND);
@@ -62,10 +78,15 @@ int main() {
 	
 	//Main loop
 	while (!glfwWindowShouldClose(window)) {
+
 		//Watch for events
 		glfwPollEvents();
-		mat4 model = create_model_transform(quad_position, 10 * glfwGetTime());
-		glUniformMatrix4fv(model_location, 1, GL_FALSE, model.entries);
+
+		//Apply the transformation
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, quad_position);
+		model = glm::rotate(model, float(glfwGetTime()), {0.0f, 0.0f, 1.0f});
+		glUniformMatrix4fv(model_location, 1, GL_FALSE, glm::value_ptr(model));
 
 		//Reset screen color
 		glClear(GL_COLOR_BUFFER_BIT);
