@@ -14,3 +14,5 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+
+std::vector<std::string> split(std::string lines, std::string delimiter);

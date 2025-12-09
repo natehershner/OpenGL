@@ -18,6 +18,7 @@ add_executable(window
 	src/systems/render_system.cpp
 	src/view/shader.cpp
 	src/controller/app.cpp
+	src/factories/factory.cpp
 	)
 
 target_include_directories(window PRIVATE dependencies)
