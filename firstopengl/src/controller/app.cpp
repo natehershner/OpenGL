@@ -135,7 +135,7 @@ void App::set_up_glfw() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
 	
-	window = glfwCreateWindow(640, 480, "Hello Window!", NULL, NULL);
+	window = glfwCreateWindow(640, 480, "Cube", NULL, NULL);
 	glfwMakeContextCurrent(window);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
@@ -148,7 +148,7 @@ void App::set_up_glfw() {
 
 void App::set_up_opengl() {
 
-    glClearColor(0.25f, 0.5f, 0.75f, 1.0f);
+    glClearColor(0.75f, 0.5f, 0.75f, 1.0f);
 	//Set the rendering region to the actual screen size
 	int w,h;
 	glfwGetFramebufferSize(window, &w, &h);
