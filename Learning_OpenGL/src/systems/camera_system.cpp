@@ -18,7 +18,7 @@ bool CameraSystem::update(std::unordered_map<unsigned int, TransformComponent> &
 	glm::vec3& forwards = cameraComponent.forwards;
 
 	//Spherical to cartesian
-	forwards = {glm::cos(theta) * glm::cos(phi), glm::sin(theta) * glm::sin(phi), glm::sin(phi)};
+	forwards = {glm::cos(theta) * glm::cos(phi), glm::sin(theta) * glm::cos(phi), glm::sin(phi)};
 	right = glm::normalize(glm::cross(forwards, global_up));
 	up = glm::normalize(glm::cross(right, forwards));
 
