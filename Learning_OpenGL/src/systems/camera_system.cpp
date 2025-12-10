@@ -48,8 +48,8 @@ bool CameraSystem::update(std::unordered_map<unsigned int, TransformComponent> &
 	glfwPollEvents();
 
 	//Calculate how far mouse has moved from center
-	dEulers.z = -0.01f * static_cast<float>(mouse_x - 320.0);
-	dEulers.y = -0.01f * static_cast<float>(mouse_y - 240.0);
+	dEulers.z = -0.1f * static_cast<float>(mouse_x - 320.0);
+	dEulers.y = -0.1f * static_cast<float>(mouse_y - 240.0);
 
 	//Clamp pitch to 89 degrees
 	eulers.y = fminf(89.0f, fmaxf(-89.0f, eulers.y + dEulers.y));
